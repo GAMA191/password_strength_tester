@@ -479,6 +479,19 @@
             
             // Ensure score is between 0 and 100
             result.score = Math.min(100, Math.round(result.score));
+
+            // Set human-readable strength label
+            if (result.score >= 80) {
+                result.strength = 'Very Strong';
+            } else if (result.score >= 60) {
+                result.strength = 'Strong';
+            } else if (result.score >= 40) {
+                result.strength = 'Good';
+            } else if (result.score >= 20) {
+                result.strength = 'Weak';
+            } else {
+                result.strength = 'Very Weak';
+            }
             
             return result;
         }

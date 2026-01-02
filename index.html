@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Tester | Easy Integration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2a084e 0%, #4e586b 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 1rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .tester-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            flex: 1;
+            min-width: 350px;
+            max-width: 500px;
+        }
+
+        .integration-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            flex: 1;
+            min-width: 350px;
+            max-width: 500px;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            color: #2575fc;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 1rem;
+            padding-right: 3rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+        }
+
+        .password-input:focus {
+            border-color: #2575fc;
+            outline: none;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .strength-meter {
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .strength-text {
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            min-height: 1.8rem;
+        }
+
+        .requirements {
+            list-style-type: none;
+            margin-top: 1.5rem;
+        }
+
+        .requirements li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .requirements i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .requirements .fa-check {
+            color: #4CAF50;
+        }
+
+        .requirements .fa-times {
+            color: #F44336;
+        }
+
+        .strength-weak {
+            color: #F44336;
+        }
+
+        .strength-fair {
+            color: #FF9800;
+        }
+
+        .strength-good {
+            color: #2196F3;
+        }
+
+        .strength-strong {
+            color: #4CAF50;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+        }
+
+        .score-item {
+            text-align: center;
+            flex: 1;
+            padding: 0.8rem;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .integration-info {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .integration-info h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .integration-info code {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+
+        .integration-info pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .copy-button {
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .copy-button:hover {
+            background-color: #1c6ae4;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .tester-card, .integration-card {
+                max-width: 100%;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Styling for the standalone tester that can be embedded */
+        .password-tester-standalone {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Password Strength Tester</h1>
+            <p>A secure, customizable password strength tester that can be easily integrated into any website or web application. Test it below and learn how to integrate it.</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Password Tester Card -->
+            <div class="tester-card">
+                <h2 class="card-title">Test Password Strength</h2>
+                
+                <div class="input-group">
+                    <label for="password">Enter a password to test:</label>
+                    <div class="password-container">
+                        <input type="password" id="password" class="password-input" placeholder="Type your password here..." autocomplete="off">
+                        <button class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="score-display">
+                    <div class="score-item">
+                        <div class="score-value" id="score">0</div>
+                        <div class="score-label">Score /100</div>
+                    </div>
+                </div>
+                
+                <div class="strength-meter">
+                    <div class="strength-fill" id="strengthFill"></div>
+                </div>
+                
+                <div class="strength-text" id="strengthText">Enter a password to begin</div>
+                
+                <ul class="requirements" id="requirements">
+                    <li id="lengthReq"><i class="fas fa-times"></i> At least 8 characters</li>
+                    <li id="lowercaseReq"><i class="fas fa-times"></i> Contains lowercase letters</li>
+                    <li id="uppercaseReq"><i class="fas fa-times"></i> Contains uppercase letters</li>
+                    <li id="numberReq"><i class="fas fa-times"></i> Contains numbers</li>
+                    <li id="specialReq"><i class="fas fa-times"></i> Contains special characters</li>
+                </ul>
+            </div>
+            
+            <!-- Integration Guide Card -->
+            <div class="integration-card">
+                <h2 class="card-title">Easy Integration Guide</h2>
+                <p>This password strength tester can be easily integrated into any website or web application. Follow the steps below:</p>
+                
+                <div class="integration-info">
+                    <h3>1. Add the HTML structure</h3>
+                    <p>Copy and paste this HTML where you want the tester to appear:</p>
+                    <pre><code>&lt;div id="passwordTesterContainer"&gt;
+  &lt;div class="password-tester-standalone"&gt;
+    &lt;label for="passwordInput"&gt;Password:&lt;/label&gt;
+    &lt;input type="password" id="passwordInput" class="password-input" placeholder="Enter password"&gt;
+    &lt;div class="strength-meter"&gt;
+      &lt;div class="strength-fill" id="strengthFill"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="strength-text" id="strengthText"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    
+                    <h3>2. Add the CSS</h3>
+                    <p>Include this CSS in your stylesheet:</p>
+                    <pre><code>.password-tester-standalone {
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.strength-meter {
+  height: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 4px;
+  transition: width 0.3s, background-color 0.3s;
+}
+
+.strength-text {
+  font-weight: 600;
+  font-size: 1rem;
+  min-height: 1.5rem;
+}</code></pre>
+                    
+                    <h3>3. Add the JavaScript</h3>
+                    <p>Include the JavaScript file or copy the function into your project:</p>
+                    <button class="copy-button" id="copyScript">Copy Integration Script</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Password strength tester functionality
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+        const scoreElement = document.getElementById('score');
+        
+        // Requirement elements
+        const lengthReq = document.getElementById('lengthReq');
+        const lowercaseReq = document.getElementById('lowercaseReq');
+        const uppercaseReq = document.getElementById('uppercaseReq');
+        const numberReq = document.getElementById('numberReq');
+        const specialReq = document.getElementById('specialReq');
+        
+        // Copy button for integration
+        const copyScriptButton = document.getElementById('copyScript');
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+        
+        // Check password strength
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            const result = checkPasswordStrength(password);
+            updateUI(result);
+        });
+        
+        // Password strength checking function
+        function checkPasswordStrength(password) {
+            const result = {
+                score: 0,
+                strength: 'Very Weak',
+                requirements: {
+                    length: false,
+                    lowercase: false,
+                    uppercase: false,
+                    number: false,
+                    special: false
+                }
+            };
+            
+            if (!password) {
+                return result;
+            }
+            
+            // Length check (up to 30 points)
+            const length = password.length;
+            if (length >= 8) result.requirements.length = true;
+            const lengthScore = Math.min(30, length * 2.5);
+            result.score += lengthScore;
+            
+            // Lowercase check (up to 15 points)
+            const hasLowercase = /[a-z]/.test(password);
+            if (hasLowercase) result.requirements.lowercase = true;
+            result.score += hasLowercase ? 15 : 0;
+            
+            // Uppercase check (up to 15 points)
+            const hasUppercase = /[A-Z]/.test(password);
+            if (hasUppercase) result.requirements.uppercase = true;
+            result.score += hasUppercase ? 15 : 0;
+            
+            // Number check (up to 15 points)
+            const hasNumber = /[0-9]/.test(password);
+            if (hasNumber) result.requirements.number = true;
+            result.score += hasNumber ? 15 : 0;
+            
+            // Special character check (up to 15 points)
+            const hasSpecial = /[^A-Za-z0-9]/.test(password);
+            if (hasSpecial) result.requirements.special = true;
+            result.score += hasSpecial ? 15 : 0;
+            
+            // Bonus points for password length > 12 (up to 10 points)
+            if (length > 12) {
+                result.score += Math.min(10, (length - 12) * 2);
+            }
+            
+            // Ensure score is between 0 and 100
+            result.score = Math.min(100, Math.round(result.score));
+            
+            return result;
+        }
+        
+        // Update UI based on password strength result
+        function updateUI(result) {
+            // Update strength meter and text
+            strengthFill.style.width = `${result.score}%`;
+            
+            // Update color based on strength
+            if (result.score >= 80) {
+                strengthFill.style.backgroundColor = '#4CAF50';
+                strengthText.className = 'strength-text strength-strong';
+            } else if (result.score >= 60) {
+                strengthFill.style.backgroundColor = '#2196F3';
+                strengthText.className = 'strength-text strength-good';
+            } else if (result.score >= 40) {
+                strengthFill.style.backgroundColor = '#FF9800';
+                strengthText.className = 'strength-text strength-fair';
+            } else {
+                strengthFill.style.backgroundColor = '#F44336';
+                strengthText.className = 'strength-text strength-weak';
+            }
+            
+            // Update text and score
+            strengthText.textContent = result.strength;
+            scoreElement.textContent = result.score;
+            
+            // Update requirement indicators
+            updateRequirementIcon(lengthReq, result.requirements.length);
+            updateRequirementIcon(lowercaseReq, result.requirements.lowercase);
+            updateRequirementIcon(uppercaseReq, result.requirements.uppercase);
+            updateRequirementIcon(numberReq, result.requirements.number);
+            updateRequirementIcon(specialReq, result.requirements.special);
+        }
+        
+        // Update requirement icon based on status
+        function updateRequirementIcon(element, isMet) {
+            const icon = element.querySelector('i');
+            if (isMet) {
+                icon.className = 'fas fa-check';
+                icon.style.color = '#4CAF50';
+            } else {
+                icon.className = 'fas fa-times';
+                icon.style.color = '#F44336';
+            }
+        }
+        
+        // Copy integration script to clipboard
+        copyScriptButton.addEventListener('click', function() {
+            const script = `// Password Strength Tester Integration Script
+function initPasswordTester(inputId, meterId, textId) {
+    const passwordInput = document.getElementById(inputId);
+    const strengthFill = document.getElementById(meterId);
+    const strengthText = document.getElementById(textId);
+    
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        const result = checkPasswordStrength(password);
+        
+        // Update UI
+        strengthFill.style.width = result.score + '%';
+        strengthText.textContent = result.strength;
+        
+        // Update color based on strength
+        if (result.score >= 80) {
+            strengthFill.style.backgroundColor = '#4CAF50';
+        } else if (result.score >= 60) {
+            strengthFill.style.backgroundColor = '#2196F3';
+        } else if (result.score >= 40) {
+            strengthFill.style.backgroundColor = '#FF9800';
+        } else {
+            strengthFill.style.backgroundColor = '#F44336';
+        }
+    });
+    
+    // Password strength checking function
+    function checkPasswordStrength(password) {
+        let score = 0;
+        let strength = 'Very Weak';
+        
+        if (!password) return {score: 0, strength: 'Very Weak'};
+        
+        // Length check
+        const length = password.length;
+        if (length >= 8) score += Math.min(30, length * 2.5);
+        
+        // Character variety checks
+        if (/[a-z]/.test(password)) score += 15;
+        if (/[A-Z]/.test(password)) score += 15;
+        if (/[0-9]/.test(password)) score += 15;
+        if (/[^A-Za-z0-9]/.test(password)) score += 15;
+        
+        // Bonus for long passwords
+        if (length > 12) score += Math.min(10, (length - 12) * 2);
+        
+        score = Math.min(100, Math.round(score));
+        
+        // Determine strength level
+        if (score >= 80) strength = 'Very Strong';
+        else if (score >= 60) strength = 'Strong';
+        else if (score >= 40) strength = 'Good';
+        else if (score >= 20) strength = 'Weak';
+        
+        return {score, strength};
+    }
+}`;
+            
+            navigator.clipboard.writeText(script)
+                .then(() => {
+                    const originalText = copyScriptButton.textContent;
+                    copyScriptButton.textContent = 'Copied!';
+                    copyScriptButton.style.backgroundColor = '#4CAF50';
+                    
+                    setTimeout(() => {
+                        copyScriptButton.textContent = originalText;
+                        copyScriptButton.style.backgroundColor = '#2575fc';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy script. Please select and copy manually.');
+                });
+        });
+        
+        // Initialize with a sample password
+        window.addEventListener('DOMContentLoaded', () => {
+            passwordInput.value = 'SampleP@ssw0rd';
+            const result = checkPasswordStrength(passwordInput.value);
+            updateUI(result);
+        });
+    </script>
+</body>
+</html>
